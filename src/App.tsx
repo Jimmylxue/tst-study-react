@@ -17,12 +17,17 @@ function App() {
 					<img src={reactLogo} className="logo react" alt="React logo" />
 				</a>
 			</div>
-			<h1>Vite + React</h1>
+			<h1 className=" text-red-300">Vite + React</h1>
 			<div className="card">
-				<button onClick={() => setCount(count => count + 1)}>
+				<button
+					className=" text-red-500"
+					onClick={() => setCount(count => count + 1)}
+				>
 					count is {count}
 				</button>
-				<Button type="primary">hello antd</Button>
+				<Button type="primary" className="ml-5">
+					hello antd
+				</Button>
 				<p>
 					Edit <code>src/App.tsx</code> and save to test HMR
 				</p>
