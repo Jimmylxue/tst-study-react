@@ -1,13 +1,13 @@
 .chess {
-  width: 300px;
-  height: 300px;
+  width:  800px;
+  height: 800px;
   background-color: skyblue;
   margin: 0 auto;
 }
 
 .row {
   box-sizing: border-box;
-  width: 300px;
+  width: 800px;
   height: 100px;
 }
 
