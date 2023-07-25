@@ -5,37 +5,40 @@ import { observer } from "mobx-react-lite";
 // 引入store
 import useStore from "./Store/index";
 // 引如antd中的组件
-import { Button, Space, Modal } from "antd";
+import { Button, Modal, Layout } from "antd";
 // 引入React方法
 import { useState } from "react";
 
-const Row = observer(({ row, rowIndex }: any) => {
+const MyRow = observer(({ row, rowIndex, setIsGameOver }: any) => {
   /**
    * Row代表着每一行的数据，需要将row便利出来
    * @param rowIndex 每行的行索引，一共三行
    * @param row 每行的数据
+	 * @param setIsGameOver 方法，设置最后提示框的显示与隐藏
    */
   // 获取实例并解构
   const { chessControl } = useStore();
 
   // 下子操作
   function handleClick(cluIndex: number) {
-    // clu列索引
-    chessControl.chessClick(rowIndex, cluIndex);
+    if (chessControl.chessClick(rowIndex, cluIndex)) {
+      // 代表赢了
+			setIsGameOver(true);		//	将消息框显示
+			chessControl.initChess();		//	重置棋盘
+    }
   }
 
   return (
     <div className="row">
       {row.map((item, index) => {
         return (
-          <button
+          <Button
             key={index}
-            onClick={() => {
-              handleClick(index);
-            }}
+            onClick={() => {handleClick(index)}}
+            className={item === 0 ? "" : item === 1 ? "black" : "white"}
           >
-            {item === 0 ? "-" : item === 1 ? "O" : "X"}
-          </button>
+            {item === 0 ? "-" : item === 1 ? "黑" : "白"}
+          </Button>
         );
       })}
     </div>
@@ -45,33 +48,34 @@ const Row = observer(({ row, rowIndex }: any) => {
 function App() {
   // 获取实例并解构
   const { chessControl } = useStore();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ isModalOpen, setIsModalOpen ] = useState(false);
+	const [ isGameOver, setIsGameOver] = useState(false);
 
   const handleClick = () => {
     setIsModalOpen(true);
   };
 
-	const handleOk = () => {
-		console.log('确认');
-		setIsModalOpen(false);
-	}
+  const handleOk = () => {
+    setIsModalOpen(false);
+    chessControl.initChess();
+  };
 
-	const handleCancel = () => {
-		console.log('取消');
-		setIsModalOpen(false);
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+	const handleCancelGame = () => {
+		setIsGameOver(false);
 	}
 
   return (
-    <>
+    <Layout>
       <div className="chess">
         {chessControl.chess.map((item, index) => {
           // 将当前这一行的数据传过去，然后还需要将当前的行索引传过去
-          return <Row key={index} row={item} rowIndex={index} />;
+          return <MyRow setIsGameOver={setIsGameOver} key={index} row={item} rowIndex={index} />;
         })}
       </div>
-      <Button type="primary" onClick={handleClick}>
-        重新开始
-      </Button>
       <Modal
         title="提醒"
         open={isModalOpen}
@@ -80,7 +84,18 @@ function App() {
       >
         <p>确定要重新开始吗</p>
       </Modal>
-    </>
+      <Button type="primary" onClick={handleClick} className="btn">
+        重新开始
+      </Button>
+      <Modal
+        title="游戏结束"
+        open={isGameOver}
+        onOk={handleCancelGame}
+        onCancel={handleCancelGame}
+      >
+        <p>{ (chessControl.active === 1 ? '白' : '黑') }棋赢了</p>
+      </Modal>
+    </Layout>
   );
 }
 
