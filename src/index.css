@@ -104,3 +104,8 @@ button:focus-visible {
 .game-info{
   margin-left: 20px;
 }
+.restart{
+  border-radius: 10px;
+  background-color: #999;
+  margin-top: 10px;
+}
