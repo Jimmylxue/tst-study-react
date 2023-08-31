@@ -24,36 +24,22 @@ function Board({ xIsNext, squares, onPlay, onRestart }) {
     onPlay(nextSquares); //单击方块时更新Board
   };
 
-  const [isSquareFull, setSquareFull] = useState(false);
   const [status, setStatus] = useState(null);
   const [winner, setWinner] = useState(null);
 
-  const onSquareCheckFunc = () => {
-    // 遍历判断棋盘是否已满
-    for (let i = 0; i < squares.length; i++) {
-      if (squares[i] === null) {
-        setSquareFull(false);
-      }
-    }
-  };
-
   useEffect(() => {
-    onSquareCheckFunc();
-
     setWinner(calculateWinner(squares));
     calculateStatus();
-  }, [squares, status]);
+  }, [squares, status, winner]);
 
   const calculateStatus = () => {
     //判断status
     if (winner) {
       setStatus("赢的是：" + winner);
+    } else if (squares.every((square) => square !== null)) {
+      setStatus("平局了");
     } else {
-      if (isSquareFull) {
-        setStatus("平局了");
-      } else {
-        setStatus("下一个玩家是：" + (xIsNext ? "X" : "O"));
-      }
+      setStatus("下一个玩家是：" + (xIsNext ? "X" : "O"));
     }
   };
 
