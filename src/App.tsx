@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button, Modal } from "antd";
+import './App.css'
 
 interface squareProps{
   value: string;
@@ -9,7 +10,7 @@ interface squareProps{
 // 子组件
 function Square({ value, onSquareClick }:squareProps) {
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button className="border-solid border-1 border-slate-500 bg-white float-left text-2xl font-bold w-20 h-20 " onClick={onSquareClick}>
       {value}
     </button>
   );
@@ -57,10 +58,13 @@ function Board({ xIsNext, squares, onPlay, onRestart }:BoardProps) {
 
   return (
     <>
-      <div className="status">{status}</div>
+      <div className=" my-20 text-4xl ml-10 text-center">{
+        status}</div>
+      
       {/* ==============使用循环来渲染棋盘的格子============== */}
       {[0, 1, 2].map((row) => (
-        <div className="board-row" key={row}>
+        // ml-44 after:table clear-both
+        <div className="ml-44 after:table clear-both " key={row}>
           {[0, 1, 2].map((col) => {
             const index = 3 * row + col;
             return (
@@ -73,9 +77,12 @@ function Board({ xIsNext, squares, onPlay, onRestart }:BoardProps) {
           })}
         </div>
       ))}
-      <Button type="primary" onClick={onRestart}>
-        重新开始
-      </Button>
+      <div className=" mt-36 mx-14 text-center">
+        <Button type="primary" className="w-40 h-16 text-2xl" onClick={onRestart} >
+          重新开始
+        </Button>
+      </div>
+      
     </>
   );
 }
@@ -114,7 +121,7 @@ export default function Game() {
   };
 
   //跳转到指定的历史记录
-  const moves = history.map((squares, move) => {
+  const moves = history.map((_squares, move) => {
     //squares参数当前元素的值，move参数当前元素的索引值
     const desc = move ? "回到第 " + move + " 步" : "开始游戏";
     return (
@@ -125,7 +132,7 @@ export default function Game() {
     );
   });
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [_isModalOpen, setIsModalOpen] = useState<boolean>(false);
   //设置重新开始游戏
   const restart = () => {
     setHistory([Array(9).fill(null)]);
@@ -169,8 +176,8 @@ export default function Game() {
   }, [winnerName]);
 
   return (
-    <div className="game">
-      <div className="game-board">
+    <div style={{width: 900}} className="flex">
+      <div className="w-2/3">
         <Board
           xIsNext={xIsNext}
           squares={currentSquares}
@@ -178,8 +185,9 @@ export default function Game() {
           onRestart={handleRestart}
         />
       </div>
-      <div className="game-info">
-        <ol>{moves}</ol>
+      {/* ml-24 mt-60 my-60 */}
+      <div className=" w-1/3 pl-5">  
+        <ol className="ml-8 mt-72">{moves}</ol>
       </div>
     </div>
   );
@@ -188,9 +196,7 @@ export default function Game() {
 //判断输赢的函数
 const calculateWinner = (squares:string[]) => {
   const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8], //水平线
+    [0, 1, 2],[3, 4, 5],[6, 7, 8], //水平线
     [0, 3, 6],
     [1, 4, 7],
     [2, 5, 8], //垂直线
